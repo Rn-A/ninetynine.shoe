@@ -1,0 +1,131 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // ===============================================================
+    // Assumed Data Model
+    // ===============================================================
+    //
+    // Collection: orders
+    // Document ID: custom resi (e.g. NS-A2F1)
+    // Fields:
+    //   - customer_name: string
+    //   - phone: string
+    //   - address: string
+    //   - services_used: string
+    //   - total_price: number
+    //   - status: string
+    //   - date: string
+    //   - resi: string
+    //   - last_updated: number (optional)
+    //
+    // Collection: services
+    // Document ID: auto-generated
+    // Fields:
+    //   - name: string
+    //   - category: string
+    //   - price: number
+    //   - description: string
+    //
+    // Collection: users
+    // Document ID: user uid
+    // Fields:
+    //   - role: string ('admin' or 'user')
+    //
+    // ===============================================================
+
+    // ===============================================================
+    // Helper Functions
+    // ===============================================================
+    
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function isAdmin() {
+      return isAuthenticated() &&
+        (
+          (exists(/databases/$(database)/documents/users/$(request.auth.uid)) && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin') ||
+          (request.auth.token.email == "rendraa046@gmail.com" && request.auth.token.email_verified == true)
+        );
+    }
+
+    function hasOnlyAllowedFields(fields) {
+      return request.resource.data.keys().hasOnly(fields);
+    }
+
+    // ===============================================================
+    // Domain Validators
+    // ===============================================================
+
+    function isValidOrder(data) {
+      return data.customer_name is string && data.customer_name.size() > 0 && data.customer_name.size() < 100 &&
+             data.phone is string && data.phone.size() > 0 && data.phone.size() < 20 &&
+             data.address is string && data.address.size() > 0 && data.address.size() < 500 &&
+             data.services_used is string && data.services_used.size() > 0 && data.services_used.size() < 500 &&
+             data.total_price is number && data.total_price >= 0 &&
+             data.status is string && data.status.size() > 0 && data.status.size() < 50 &&
+             data.date is string && data.date.size() > 0 && data.date.size() < 50 &&
+             data.resi is string && data.resi.size() > 0 && data.resi.size() < 20;
+    }
+
+    function isValidService(data) {
+      return data.name is string && data.name.size() > 0 && data.name.size() < 100 &&
+             data.category is string && data.category.size() > 0 && data.category.size() < 50 &&
+             data.price is number && data.price >= 0 &&
+             (!('description' in data) || (data.description is string && data.description.size() <= 500));
+    }
+
+    // ===============================================================
+    // Rules
+    // ===============================================================
+
+    match /orders/{orderId} {
+      // Anyone can read a specific order if they know the ID (resi)
+      allow get: if true;
+      // Only admin can list all orders
+      allow list: if isAdmin();
+      
+      // Anyone can create an order (from the public form)
+      allow create: if isValidOrder(request.resource.data) && 
+                    hasOnlyAllowedFields(['customer_name', 'phone', 'address', 'services_used', 'total_price', 'status', 'date', 'resi']);
+      
+      // Only admin can update or delete orders
+      allow update: if isAdmin() && 
+                    (!('customer_name' in request.resource.data) || (request.resource.data.customer_name is string && request.resource.data.customer_name.size() < 100)) &&
+                    (!('phone' in request.resource.data) || (request.resource.data.phone is string && request.resource.data.phone.size() < 20)) &&
+                    (!('address' in request.resource.data) || (request.resource.data.address is string && request.resource.data.address.size() < 500)) &&
+                    (!('services_used' in request.resource.data) || (request.resource.data.services_used is string && request.resource.data.services_used.size() < 500)) &&
+                    (!('total_price' in request.resource.data) || (request.resource.data.total_price is number && request.resource.data.total_price >= 0)) &&
+                    (!('status' in request.resource.data) || (request.resource.data.status is string && request.resource.data.status.size() < 50)) &&
+                    (!('date' in request.resource.data) || (request.resource.data.date is string && request.resource.data.date.size() < 50)) &&
+                    (!('resi' in request.resource.data) || (request.resource.data.resi is string && request.resource.data.resi.size() < 20)) &&
+                    (!('last_updated' in request.resource.data) || (request.resource.data.last_updated is number));
+      
+      allow delete: if isAdmin();
+    }
+
+    match /services/{serviceId} {
+      // Anyone can read services (to show on the order form)
+      allow read: if true;
+      
+      // Only admin can manage services
+      allow create: if isAdmin() && isValidService(request.resource.data) && 
+                    hasOnlyAllowedFields(['name', 'category', 'price', 'description']);
+      
+      allow update: if isAdmin() && 
+                    (!('name' in request.resource.data) || (request.resource.data.name is string && request.resource.data.name.size() > 0 && request.resource.data.name.size() < 100)) &&
+                    (!('category' in request.resource.data) || (request.resource.data.category is string && request.resource.data.category.size() > 0 && request.resource.data.category.size() < 50)) &&
+                    (!('price' in request.resource.data) || (request.resource.data.price is number && request.resource.data.price >= 0)) &&
+                    (!('description' in request.resource.data) || (request.resource.data.description is string && request.resource.data.description.size() <= 500));
+      
+      allow delete: if isAdmin();
+    }
+
+    match /users/{userId} {
+      // Only admin can manage users
+      allow read, write: if isAdmin();
+    }
+  }
+}

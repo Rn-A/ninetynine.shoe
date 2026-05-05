@@ -1,0 +1,27 @@
+@import "tailwindcss";
+
+@theme {
+  --font-bebas: "Bebas Neue", sans-serif;
+  --font-montserrat: "Montserrat", sans-serif;
+  
+  --color-primary: #0b5cff;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+  body {
+    @apply font-montserrat text-slate-800 bg-slate-50;
+  }
+}
+
+@layer components {
+  .btn-primary {
+    @apply inline-block bg-primary text-white px-6 py-3 rounded-full font-semibold text-sm hover:bg-blue-700 transition-all shadow-md hover:shadow-lg text-center whitespace-nowrap;
+  }
+  
+  .btn-outline {
+    @apply inline-block bg-transparent text-slate-800 border-2 border-slate-800 px-6 py-3 rounded-full font-semibold text-sm hover:bg-slate-800 hover:text-white transition-all text-center whitespace-nowrap;
+  }
+}
