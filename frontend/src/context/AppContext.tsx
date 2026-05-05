@@ -2,7 +2,6 @@
 
 import React, { createContext, useContext, useEffect, useState } from 'react';
 
-// Defines the custom user type replacing the Firebase user
 interface AuthUser {
   id?: number | string;
   name: string;

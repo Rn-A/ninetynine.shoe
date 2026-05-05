@@ -5,12 +5,11 @@ import multer from "multer";
 import { sequelize, User, Service, Order, Testimonial, ShowcaseItem } from "./src/db/database.js";
 import { fileURLToPath } from 'url';
 
-// ESM __dirname shim
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 
-// Multer: save uploaded files directly to frontend's public/uploads folder
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     const uploadDir = path.join(__dirname, '..', 'frontend', 'public', 'uploads');
@@ -41,7 +40,6 @@ async function startServer() {
   app.use(cors());
   app.use(express.json());
 
-  // Serve uploaded files directly from backend if frontend static file cache is stale
   app.use('/uploads', express.static(path.join(__dirname, '..', 'frontend', 'public', 'uploads')));
 
   // Connect & Sync Database
@@ -95,7 +93,7 @@ async function startServer() {
     console.error('Unable to connect to the database:', error);
   }
 
-  // --- API ROUTES ---
+  
   app.post("/api/login", async (req, res) => {
     const { username, password } = req.body;
     console.log(`Login attempt for: ${username}`);
@@ -175,9 +173,7 @@ async function startServer() {
     res.json({ success: true });
   });
 
-  // ==== FILE UPLOAD API ====
-  // POST /api/upload — accepts multipart/form-data with field "file"
-  // Saves to frontend/public/uploads/ and returns the public URL path
+  
   app.post("/api/upload", upload.single("file"), (req: any, res: any) => {
     if (!req.file) {
       return res.status(400).json({ error: "Tidak ada file yang diunggah." });
@@ -187,7 +183,7 @@ async function startServer() {
     res.json({ url: publicUrl, filename: req.file.filename, mimetype: req.file.mimetype });
   });
 
-  // ==== CMS APIs ====
+  
 
   // Testimonials
   app.get("/api/testimonials", async (req, res) => {

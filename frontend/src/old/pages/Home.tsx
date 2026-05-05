@@ -47,7 +47,7 @@ export default function Home() {
 
   return (
     <div className="bg-slate-50 min-h-screen font-montserrat">
-      {/* Navbar with Glassmorphism */}
+
       <nav
         className={`fixed top-0 left-0 w-full z-50 transition-all duration-500 ${isScrolled ? 'py-3' : 'py-5'}`}
       >
@@ -101,7 +101,7 @@ export default function Home() {
         </div>
       </nav>
 
-      {/* Mobile Menu */}
+
       <div className={`fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-40 transition-opacity duration-300 lg:hidden ${mobileMenuOpen ? 'opacity-100 visible' : 'opacity-0 invisible'}`} onClick={() => setMobileMenuOpen(false)}>
         <div
           className={`absolute right-0 top-0 h-full w-4/5 max-w-sm bg-white p-10 shadow-2xl transition-transform duration-500 ease-out ${mobileMenuOpen ? 'translate-x-0' : 'translate-x-full'}`}
@@ -131,7 +131,7 @@ export default function Home() {
         </div>
       </div>
 
-      {/* Hero Section - Redesigned for Premium Look */}
+
       <section className="relative pt-40 pb-24 overflow-hidden">
         <div className="absolute top-0 right-0 w-1/2 h-full bg-slate-50 -z-10 rounded-l-[100px] hidden lg:block" />
         <div className="absolute top-20 right-20 w-64 h-64 bg-primary/10 rounded-full blur-[100px] -z-10 animate-pulse" />
@@ -194,7 +194,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Modern Marquee */}
+
       <div className="w-full bg-slate-900 text-white py-6 overflow-hidden transform -rotate-1 origin-center scale-105 z-20 shadow-2xl shadow-slate-900/20">
         <div className="flex animate-marquee whitespace-nowrap font-bebas tracking-[0.2em] text-2xl w-max uppercase italic opacity-90">
           <span className="px-12">• Premium Deep Clean • Express Service • Pick Up & Delivery • Best in Cilacap • Trusted by Sneakershead • </span>
@@ -204,7 +204,7 @@ export default function Home() {
       </div>
 
 
-      {/* Showcase Video Cards — Dynamic from CMS */}
+
       <section className="max-w-5xl mx-auto mt-12 mb-20 px-4 flex flex-col md:flex-row justify-center gap-6 relative z-20">
         {showcaseItems.map((item, idx) => (
           <div
@@ -320,7 +320,7 @@ export default function Home() {
       </section>
 
 
-      {/* DICOMMENT: Another Treatment
+
       <section id="another" className="py-20 px-4 max-w-7xl mx-auto">
         <h2 className="text-4xl md:text-5xl font-bebas text-center text-slate-800 mb-2">LAYANAN LAINNYA</h2>
         <p className="text-center text-slate-500 font-medium mb-12">Bukan Sekadar Sepatu</p>
@@ -360,7 +360,7 @@ export default function Home() {
       </section>
       */}
 
-      {/* Testimonials — Dynamic from CMS */}
+
       <section id="testimonials" className="py-20 px-4 bg-slate-900 text-white bg-cover bg-center bg-fixed" style={{ backgroundImage: "linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('/uploads/Favorite.jpg')" }}>
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
@@ -396,7 +396,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Location Section */}
+
       <section id="contact" className="py-20 px-4 max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
         <div>
           <h2 className="text-5xl md:text-6xl font-bebas text-slate-800 mb-10">KUNJUNGI<br /><span className="text-primary">LAB KAMI.</span></h2>
